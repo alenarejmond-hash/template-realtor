@@ -14,27 +14,86 @@ const InstagramIcon = ({ className }) => (
 );
 
 // ==========================================
-// ⚙️ НАСТРОЙКИ КОНТЕНТА
+// ⚙️ НАСТРОЙКИ КОНТЕНТА И ПЕРЕВОДОВ
 // ==========================================
-const CONTENT = {
+const BASE_CONTENT = {
   bgImage: '/bg-realtor.webp', // ФОН: файл bg-realtor.jpg в папке public
   avatar: '/avatar-realtor.webp', // АВАТАР: файл avatar-realtor.jpg в папке public
-  badge: 'Cascade Realty',
-  name1: 'ТИГРАН',
-  name2: 'САРОЯН',
-  role: 'Elite Real Estate',
   username: '@saroyan_estate',
   subUsername: 'Prime Properties',
-  stat1Title: 'Объекты в базе',
-  stat1Value: '80+',
-  stat2Title: 'Объем сделок',
-  stat2Value: 'от $1M',
-  quote: 'Ваш статус достоин лучшего адреса.',
-  actionText: 'Закрытый каталог',
   actionLink: 'https://t.me/твой_юзернейм',
   waLink: 'https://wa.me/79990000000',
   tgLink: 'https://t.me/твой_юзернейм',
   instLink: 'https://instagram.com/твой_юзернейм',
+};
+
+const TRANSLATIONS = {
+  RU: {
+    badge: 'Cascade Realty',
+    name1: 'ТИГРАН',
+    name2: 'САРОЯН',
+    role: 'Элитная недвижимость',
+    stat1Title: 'Объекты в базе',
+    stat1Value: '80+',
+    stat2Title: 'Объем сделок',
+    stat2Value: 'от $1M',
+    service1: 'Инвестиции',
+    service2: 'Пентхаусы',
+    service3: 'Оффмаркет',
+    quote: 'Ваш статус достоин лучшего адреса.',
+    actionText: 'Закрытый каталог',
+    modalTitle: 'Поделиться визиткой',
+    modalDesc: 'Дайте отсканировать QR-код или отправьте ссылку напрямую.',
+    copied: 'Скопировано!',
+    copy: 'Копировать',
+    shareBtn: 'Отправить',
+    shareTitle: 'Моя цифровая визитка',
+    shareText: 'Привет! Вот моя визитка с контактами:',
+  },
+  EN: {
+    badge: 'Cascade Realty',
+    name1: 'TIGRAN',
+    name2: 'SAROYAN',
+    role: 'Elite Real Estate',
+    stat1Title: 'Active Listings',
+    stat1Value: '80+',
+    stat2Title: 'Deals From',
+    stat2Value: '$1M+',
+    service1: 'Investments',
+    service2: 'Penthouses',
+    service3: 'Off-market',
+    quote: 'Your status deserves the finest address.',
+    actionText: 'Exclusive Catalog',
+    modalTitle: 'Share Business Card',
+    modalDesc: 'Let someone scan the QR code or send the link directly.',
+    copied: 'Copied!',
+    copy: 'Copy',
+    shareBtn: 'Share',
+    shareTitle: 'My Digital Business Card',
+    shareText: 'Hello! Here is my digital business card with contact details:',
+  },
+  AM: {
+    badge: 'Cascade Realty',
+    name1: 'ՏԻԳՐԱՆ',
+    name2: 'ՍԱՐՈՅԱՆ',
+    role: 'Էլիտար Անշարժ Գույք',
+    stat1Title: 'Ակտիվ Առաջարկներ',
+    stat1Value: '80+',
+    stat2Title: 'Գործարքներ',
+    stat2Value: '$1M-ից',
+    service1: 'Ներդրումներ',
+    service2: 'Պենտհաուսներ',
+    service3: 'Օֆֆմարկետ',
+    quote: 'Ձեր կարգավիճակն արժանի է լավագույն հասցեին։',
+    actionText: 'Փակ Կատալոգ',
+    modalTitle: 'Կիսվել Այցեքարտով',
+    modalDesc: 'Թույլ տվեք սկանավորել QR կոդը կամ ուղարկեք հղումը անմիջապես։',
+    copied: 'Պատճենված է',
+    copy: 'Պատճենել',
+    shareBtn: 'Կիսվել',
+    shareTitle: 'Իմ թվային այցեքարտը',
+    shareText: 'Ողջույն։ Ահա իմ թվային այցեքարտը կոնտակտային տվյալներով․',
+  }
 };
 
 // ==========================================
@@ -166,12 +225,12 @@ const globalStyles = `
     }
   }
 
-  /* Анимация сканирования для кнопки (Риэлтор) */
-  @keyframes scan-vertical {
-    0%, 10% { top: 5%; opacity: 0; }
-    20% { opacity: 1; }
-    80% { opacity: 1; }
-    90%, 100% { top: 95%; opacity: 0; }
+  /* Анимация сканирования для кнопки (горизонтальная, плавная) */
+  @keyframes scan-horizontal {
+    0% { left: -5%; opacity: 0; }
+    10% { opacity: 0.8; }
+    90% { opacity: 0.8; }
+    100% { left: 105%; opacity: 0; }
   }
 `;
 
@@ -207,39 +266,41 @@ const BurnRevealImage = ({ src, className, style, imgClassName = "" }) => {
 // ==========================================
 // 🏙️ КОМПОНЕНТ ВИЗИТКИ (РИЭЛТОР)
 // ==========================================
-const RealtorCard = () => {
+const RealtorCard = ({ t }) => {
   return (
     <>
       {/* ЛИЦЕВАЯ СТОРОНА (Obsidian & Platinum) */}
-      <div className="absolute inset-0 w-full h-full card-backface-hidden rounded-[2.5rem] shadow-[0_20px_50px_rgba(148,163,184,0.2)] overflow-hidden bg-[#050505] text-white flex flex-col p-6 group-hover:shadow-[0_20px_80px_rgba(203,213,225,0.4)] transition-shadow duration-700 border border-slate-700/30">
-        <div className="absolute inset-0 bg-gradient-to-tr from-slate-900 via-black to-slate-800 opacity-60 mix-blend-screen"></div>
+      <div className="absolute inset-0 w-full h-full card-backface-hidden rounded-[2.5rem] shadow-[0_20px_50px_rgba(148,163,184,0.2)] overflow-hidden bg-[#050505] text-white flex flex-col p-[clamp(1rem,6cqw,1.5rem)] group-hover:shadow-[0_20px_80px_rgba(203,213,225,0.4)] transition-shadow duration-700 border border-slate-700/30">
+        
+        {/* Базовое фото - 100% видимость, без искажений */}
+        <BurnRevealImage src={BASE_CONTENT.bgImage} className="opacity-100" />
+        
+        {/* Темный градиент поверх фото для читаемости текста (темнее снизу, прозрачный сверху) */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/40 to-transparent pointer-events-none opacity-90 sm:opacity-80"></div>
 
         {/* Архитектурные линии на фоне */}
-        <div className="absolute top-0 right-0 w-[150%] h-[1px] bg-gradient-to-r from-transparent via-slate-500/30 to-transparent transform rotate-45 translate-x-1/4 translate-y-20"></div>
-        <div className="absolute bottom-0 left-0 w-[150%] h-[1px] bg-gradient-to-r from-transparent via-slate-500/30 to-transparent transform rotate-45 -translate-x-1/4 -translate-y-20"></div>
-
-        {/* Выжигающийся фон цвета платины/серебра */}
-        <BurnRevealImage src={CONTENT.bgImage} className="opacity-40 mix-blend-luminosity grayscale" />
+        <div className="absolute top-0 right-0 w-[150%] h-[1px] bg-gradient-to-r from-transparent via-slate-500/30 to-transparent transform rotate-45 translate-x-1/4 translate-y-20 pointer-events-none"></div>
+        <div className="absolute bottom-0 left-0 w-[150%] h-[1px] bg-gradient-to-r from-transparent via-slate-500/30 to-transparent transform rotate-45 -translate-x-1/4 -translate-y-20 pointer-events-none"></div>
 
         <div className="relative z-10 flex flex-col h-full justify-between">
           <div className="flex justify-between items-start">
-            <div className="bg-black/80 backdrop-blur-md px-4 py-2 rounded-sm border-l-2 border-slate-400 flex items-center gap-2 shadow-[4px_4px_15px_rgba(0,0,0,0.5)]">
-              <MapPin className="w-3.5 h-3.5 text-slate-300" />
-              <span className="text-[10px] font-medium tracking-[0.2em] uppercase text-slate-100">{CONTENT.badge}</span>
+            <div className="bg-[#151515]/95 sm:bg-black/80 sm:backdrop-blur-md px-[clamp(0.5rem,4cqw,1rem)] py-[clamp(0.25rem,2cqw,0.5rem)] rounded-sm border-l-2 border-slate-400 flex items-center gap-[clamp(0.25rem,2cqw,0.5rem)] shadow-[4px_4px_15px_rgba(0,0,0,0.5)]">
+              <MapPin className="w-[clamp(0.6rem,2.5cqw,0.875rem)] h-[clamp(0.6rem,2.5cqw,0.875rem)] text-slate-300" />
+              <span className="text-[clamp(0.5rem,2cqw,0.625rem)] font-medium tracking-[0.2em] uppercase text-slate-100">{t.badge}</span>
             </div>
-            <Building2 className="w-8 h-8 text-slate-300/50" />
+            <Building2 className="w-[clamp(1.5rem,6cqw,2rem)] h-[clamp(1.5rem,6cqw,2rem)] text-slate-300/80" />
           </div>
 
-          <div className="mb-4">
-            <h2 className="text-3xl sm:text-4xl leading-tight font-light mb-1 uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-slate-100 to-slate-500 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
-              {CONTENT.name1}
+          <div className="mb-[clamp(0.5rem,4cqw,1rem)]">
+            <h2 className="text-[clamp(1.5rem,8cqw,2.25rem)] leading-tight font-light mb-[clamp(0.125rem,1cqw,0.25rem)] uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-slate-100 to-slate-400 drop-shadow-[0_2px_4px_rgba(0,0,0,1)]">
+              {t.name1}
               <br />
-              <span className="font-bold text-white drop-shadow-[0_4px_10px_rgba(0,0,0,1)]">{CONTENT.name2}</span>
+              <span className="font-bold text-white drop-shadow-[0_4px_10px_rgba(0,0,0,1)]">{t.name2}</span>
             </h2>
-            <div className="flex items-center gap-3 mt-3">
-              <div className="h-[1px] w-8 bg-slate-500 shadow-[0_0_8px_rgba(148,163,184,0.8)]"></div>
-              <p className="text-slate-400 font-medium text-[10px] uppercase tracking-[0.3em]">
-                {CONTENT.role}
+            <div className="flex items-center gap-[clamp(0.375rem,3cqw,0.75rem)] mt-[clamp(0.375rem,3cqw,0.75rem)]">
+              <div className="h-[1px] w-[clamp(1rem,6cqw,2rem)] bg-slate-400 shadow-[0_0_8px_rgba(148,163,184,0.8)]"></div>
+              <p className="text-slate-300 font-medium text-[clamp(0.5rem,2cqw,0.625rem)] uppercase tracking-[0.3em] drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                {t.role}
               </p>
             </div>
           </div>
@@ -250,56 +311,65 @@ const RealtorCard = () => {
       <div className="absolute inset-0 w-full h-full card-backface-hidden rounded-[2.5rem] shadow-[0_20px_50px_rgba(148,163,184,0.2)] overflow-hidden bg-[#0a0a0a] flex flex-col text-white border border-slate-700/50" style={{ transform: 'rotateY(180deg)' }}>
         
         {/* Текстура шлифованного металла */}
-        <div className="absolute inset-0 opacity-20 pointer-events-none mix-blend-overlay" style={{ backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 2px, rgba(255,255,255,0.05) 2px, rgba(255,255,255,0.05) 4px)' }}></div>
+        <div className="absolute inset-0 opacity-20 pointer-events-none mix-blend-normal sm:mix-blend-overlay" style={{ backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 2px, rgba(255,255,255,0.05) 2px, rgba(255,255,255,0.05) 4px)' }}></div>
 
-        <div className="relative z-10 flex flex-col h-full p-6">
+        <div className="relative z-10 flex flex-col h-full p-[clamp(1rem,6cqw,1.5rem)]">
           {/* Шапка: Лого и Аватар */}
-          <div className="flex items-end gap-4 mb-6 mt-1 relative z-20">
-            <div className="w-16 h-16 shrink-0 bg-slate-900 border border-slate-600 shadow-[0_0_20px_rgba(148,163,184,0.15)] rounded-sm overflow-hidden">
-              <img src={CONTENT.avatar} alt={CONTENT.name1} className="w-full h-full object-cover grayscale opacity-90" />
+          <div className="flex items-end gap-[clamp(0.5rem,4cqw,1rem)] mb-[clamp(1rem,6cqw,1.5rem)] mt-[clamp(0.125rem,1cqw,0.25rem)] relative z-20">
+            <div className="w-[clamp(2.5rem,12cqw,4rem)] h-[clamp(2.5rem,12cqw,4rem)] shrink-0 bg-slate-900 border border-slate-600 shadow-[0_0_20px_rgba(148,163,184,0.15)] rounded-sm overflow-hidden">
+              <img src={BASE_CONTENT.avatar} alt={t.name1} className="w-full h-full object-cover grayscale opacity-90" />
             </div>
-            <div className="flex flex-col pb-1 flex-1">
-              <h3 className="text-base sm:text-sm font-light tracking-[0.2em] text-white uppercase leading-none mb-1.5 drop-shadow-md" title={CONTENT.username}>{CONTENT.username}</h3>
-              <p className="text-slate-400 text-[8px] uppercase tracking-[0.25em] font-bold">{CONTENT.subUsername}</p>
+            <div className="flex flex-col pb-[clamp(0.125rem,1cqw,0.25rem)] flex-1">
+              <h3 className="text-[clamp(0.75rem,3cqw,1rem)] font-light tracking-[0.2em] text-white uppercase leading-none mb-[clamp(0.2rem,1.5cqw,0.375rem)] drop-shadow-md" title={BASE_CONTENT.username}>{BASE_CONTENT.username}</h3>
+              <p className="text-slate-400 text-[clamp(0.4rem,1.5cqw,0.5rem)] uppercase tracking-[0.25em] font-bold">{BASE_CONTENT.subUsername}</p>
             </div>
           </div>
 
           {/* Статистика / Детали (в 2 колонки) */}
-          <div className="flex gap-3 mb-5 mt-auto">
-            <div className="flex-1 bg-slate-900/50 border border-slate-700/50 py-3 px-2 rounded-sm flex flex-col items-center justify-center backdrop-blur-sm shadow-inner text-center">
-              <span className="text-lg font-medium tracking-wider text-slate-100">{CONTENT.stat1Value}</span>
-              <span className="text-[8px] text-slate-400 uppercase tracking-widest mt-0.5">{CONTENT.stat1Title}</span>
+          <div className="flex gap-[clamp(0.375rem,3cqw,0.75rem)] mb-[clamp(0.5rem,3.5cqw,1rem)] mt-auto">
+            <div className="flex-1 bg-[#151515]/95 sm:bg-slate-900/50 border border-slate-700/50 py-[clamp(0.5rem,3cqw,0.75rem)] px-[clamp(0.25rem,2cqw,0.5rem)] rounded-sm flex flex-col items-center justify-center sm:backdrop-blur-sm shadow-inner text-center">
+              <span className="text-[clamp(0.875rem,4cqw,1.125rem)] font-medium tracking-wider text-slate-100">{t.stat1Value}</span>
+              <span className="text-[clamp(0.4rem,1.5cqw,0.5rem)] text-slate-400 uppercase tracking-widest mt-[clamp(0.0625rem,0.5cqw,0.125rem)]">{t.stat1Title}</span>
             </div>
-            <div className="flex-1 bg-slate-900/50 border border-slate-700/50 py-3 px-2 rounded-sm flex flex-col items-center justify-center backdrop-blur-sm shadow-inner text-center">
-              <span className="text-lg font-medium tracking-wider text-slate-100">{CONTENT.stat2Value}</span>
-              <span className="text-[8px] text-slate-400 uppercase tracking-widest mt-0.5">{CONTENT.stat2Title}</span>
+            <div className="flex-1 bg-[#151515]/95 sm:bg-slate-900/50 border border-slate-700/50 py-[clamp(0.5rem,3cqw,0.75rem)] px-[clamp(0.25rem,2cqw,0.5rem)] rounded-sm flex flex-col items-center justify-center sm:backdrop-blur-sm shadow-inner text-center">
+              <span className="text-[clamp(0.875rem,4cqw,1.125rem)] font-medium tracking-wider text-slate-100">{t.stat2Value}</span>
+              <span className="text-[clamp(0.4rem,1.5cqw,0.5rem)] text-slate-400 uppercase tracking-widest mt-[clamp(0.0625rem,0.5cqw,0.125rem)]">{t.stat2Title}</span>
             </div>
+          </div>
+
+          {/* Теги специализации */}
+          <div className="flex justify-center flex-wrap gap-[clamp(0.25rem,2cqw,0.5rem)] mb-[clamp(0.75rem,5cqw,1.25rem)]">
+            {[t.service1, t.service2, t.service3].map((srv, i) => (
+              <span key={i} className="text-[clamp(0.4rem,1.8cqw,0.55rem)] uppercase tracking-[0.15em] text-slate-300 border border-slate-700/50 bg-[#151515]/95 sm:bg-slate-900/50 px-[clamp(0.4rem,2.5cqw,0.75rem)] py-[clamp(0.2rem,1.5cqw,0.375rem)] rounded-sm sm:backdrop-blur-sm shadow-inner text-center font-medium">
+                {srv}
+              </span>
+            ))}
           </div>
 
           {/* Цитата */}
-          <div className="mt-auto mb-5">
-             <p className="text-[10px] sm:text-[11px] text-slate-400 uppercase tracking-widest font-light text-center px-2">
-               "{CONTENT.quote}"
+          <div className="mt-auto mb-[clamp(0.75rem,5cqw,1.25rem)]">
+             <p className="text-[clamp(0.5rem,2.2cqw,0.6875rem)] text-slate-400 uppercase tracking-widest font-light text-center px-[clamp(0.25rem,2cqw,0.5rem)]">
+               "{t.quote}"
              </p>
           </div>
 
-          {/* Кнопка с эффектом сканера (Dark Platinum) */}
-          <a href={CONTENT.actionLink} target="_blank" rel="noopener noreferrer" className="w-full bg-slate-900/80 backdrop-blur-md border border-slate-600/50 text-slate-200 font-medium uppercase tracking-[0.15em] text-[10px] py-3.5 rounded-sm flex items-center justify-center gap-2.5 transition-all hover:bg-slate-800 hover:border-slate-500 shadow-[0_0_15px_rgba(0,0,0,0.5)] group relative overflow-hidden active:scale-95 mb-3 z-20 no-tilt" onClick={e => e.stopPropagation()}>
-            <div className="absolute left-0 top-0 w-full h-[1px] bg-slate-300 opacity-30 -translate-y-full group-hover:animate-[scan-vertical_2s_ease-in-out_infinite]"></div>
-            <Key className="w-4 h-4 text-amber-200/80 drop-shadow-[0_0_5px_rgba(253,230,138,0.5)]" />
-            {CONTENT.actionText}
+          {/* Кнопка с эффектом горизонтального сканера */}
+          <a href={BASE_CONTENT.actionLink} target="_blank" rel="noopener noreferrer" className="w-full bg-[#151515]/95 sm:bg-slate-900/80 sm:backdrop-blur-md border border-slate-600/50 text-slate-200 font-medium uppercase tracking-[0.15em] text-[clamp(0.5rem,2cqw,0.625rem)] py-[clamp(0.6rem,3.5cqw,0.875rem)] rounded-sm flex items-center justify-center gap-[clamp(0.3rem,2.5cqw,0.625rem)] transition-all hover:bg-slate-800 hover:border-slate-500 shadow-[0_0_15px_rgba(0,0,0,0.5)] group relative overflow-hidden active:scale-95 mb-[clamp(0.375rem,3cqw,0.75rem)] z-20 no-tilt" onClick={e => e.stopPropagation()}>
+            <div className="absolute top-0 bottom-0 w-[3px] bg-slate-200/80 shadow-[0_0_12px_rgba(255,255,255,1)] animate-[scan-horizontal_3s_ease-in-out_infinite]"></div>
+            <Key className="w-[clamp(0.75rem,3cqw,1rem)] h-[clamp(0.75rem,3cqw,1rem)] text-amber-200/80 drop-shadow-[0_0_5px_rgba(253,230,138,0.5)] relative z-10" />
+            <span className="relative z-10">{t.actionText}</span>
           </a>
           
           {/* Нижний ряд контактов */}
-          <div className="flex justify-center gap-3 w-full pb-1 z-20 no-tilt" onClick={e => e.stopPropagation()}>
-            <a href={CONTENT.waLink} target="_blank" rel="noopener noreferrer" className="flex-1 h-11 bg-slate-900/60 backdrop-blur-md border border-slate-700/50 rounded-sm flex items-center justify-center shadow-md hover:bg-emerald-900/40 hover:border-emerald-500/50 transition-all active:scale-95 group">
-               <MessageCircle className="w-4 h-4 text-emerald-400 group-hover:scale-110 transition-transform" />
+          <div className="flex justify-center gap-[clamp(0.375rem,3cqw,0.75rem)] w-full pb-[clamp(0.125rem,1cqw,0.25rem)] z-20 no-tilt" onClick={e => e.stopPropagation()}>
+            <a href={BASE_CONTENT.waLink} target="_blank" rel="noopener noreferrer" className="flex-1 h-[clamp(2rem,9cqw,2.75rem)] bg-[#151515]/95 sm:bg-slate-900/60 sm:backdrop-blur-md border border-slate-700/50 rounded-sm flex items-center justify-center shadow-md hover:bg-emerald-900/40 hover:border-emerald-500/50 transition-all active:scale-95 group">
+               <MessageCircle className="w-[clamp(0.75rem,3cqw,1rem)] h-[clamp(0.75rem,3cqw,1rem)] text-emerald-400 group-hover:scale-110 transition-transform" />
             </a>
-            <a href={CONTENT.tgLink} target="_blank" rel="noopener noreferrer" className="flex-1 h-11 bg-slate-900/60 backdrop-blur-md border border-slate-700/50 rounded-sm flex items-center justify-center shadow-md hover:bg-blue-900/40 hover:border-blue-500/50 transition-all active:scale-95 group">
-               <Phone className="w-4 h-4 text-slate-300 group-hover:scale-110 transition-transform" />
+            <a href={BASE_CONTENT.tgLink} target="_blank" rel="noopener noreferrer" className="flex-1 h-[clamp(2rem,9cqw,2.75rem)] bg-[#151515]/95 sm:bg-slate-900/60 sm:backdrop-blur-md border border-slate-700/50 rounded-sm flex items-center justify-center shadow-md hover:bg-blue-900/40 hover:border-blue-500/50 transition-all active:scale-95 group">
+               <Phone className="w-[clamp(0.75rem,3cqw,1rem)] h-[clamp(0.75rem,3cqw,1rem)] text-slate-300 group-hover:scale-110 transition-transform" />
             </a>
-            <a href={CONTENT.instLink} target="_blank" rel="noopener noreferrer" className="flex-1 h-11 bg-slate-900/60 backdrop-blur-md border border-slate-700/50 rounded-sm flex items-center justify-center shadow-md hover:bg-pink-900/40 hover:border-pink-500/50 transition-all active:scale-95 group">
-               <InstagramIcon className="w-4 h-4 text-pink-400 group-hover:scale-110 transition-transform" />
+            <a href={BASE_CONTENT.instLink} target="_blank" rel="noopener noreferrer" className="flex-1 h-[clamp(2rem,9cqw,2.75rem)] bg-[#151515]/95 sm:bg-slate-900/60 sm:backdrop-blur-md border border-slate-700/50 rounded-sm flex items-center justify-center shadow-md hover:bg-pink-900/40 hover:border-pink-500/50 transition-all active:scale-95 group">
+               <InstagramIcon className="w-[clamp(0.75rem,3cqw,1rem)] h-[clamp(0.75rem,3cqw,1rem)] text-pink-400 group-hover:scale-110 transition-transform" />
             </a>
           </div>
         </div>
@@ -453,6 +523,8 @@ const App = () => {
     setIsFlipped(!isFlipped);
   };
 
+  const t = TRANSLATIONS[lang];
+
   const handleCopy = () => {
     navigator.clipboard.writeText(window.location.href);
     setCopied(true);
@@ -463,8 +535,8 @@ const App = () => {
     if (navigator.share) {
       try {
         await navigator.share({
-          title: 'Моя цифровая визитка',
-          text: 'Привет! Вот моя визитка с контактами:',
+          title: t.shareTitle,
+          text: t.shareText,
           url: window.location.href,
         });
       } catch (err) {}
@@ -475,16 +547,16 @@ const App = () => {
 
   const downloadVCard = () => {
     let phoneStr = '';
-    if (CONTENT.waLink) {
-      const match = CONTENT.waLink.match(/\d+/);
+    if (BASE_CONTENT.waLink) {
+      const match = BASE_CONTENT.waLink.match(/\d+/);
       if (match) phoneStr = `+${match[0]}`;
     }
 
     const vcard = [
       'BEGIN:VCARD',
       'VERSION:3.0',
-      `FN:${CONTENT.name1} ${CONTENT.name2}`,
-      `TITLE:${CONTENT.role}`,
+      `FN:${t.name1} ${t.name2}`,
+      `TITLE:${t.role}`,
       phoneStr ? `TEL;TYPE=CELL,VOICE:${phoneStr}` : '',
       phoneStr ? `URL;TYPE=WhatsApp:https://wa.me/${phoneStr.replace('+', '')}` : '',
       `URL:${typeof window !== 'undefined' ? window.location.href : ''}`,
@@ -508,22 +580,22 @@ const App = () => {
 
       {/* Параллакс-сферы (Тематические цвета Риэлтора - Slate/Zinc) */}
       <div 
-        className="fixed top-1/4 left-1/4 w-96 h-96 bg-slate-500/10 rounded-full blur-[120px] pointer-events-none transition-transform duration-1000 ease-out"
+        className="hidden sm:block fixed top-1/4 left-1/4 w-96 h-96 bg-slate-500/10 rounded-full blur-[120px] pointer-events-none transition-transform duration-1000 ease-out"
         style={{ transform: `translate(${bgOffset.x}px, ${bgOffset.y}px)` }}
       ></div>
       <div 
-        className="fixed bottom-1/4 right-1/4 w-96 h-96 bg-zinc-500/10 rounded-full blur-[120px] pointer-events-none transition-transform duration-1000 ease-out"
+        className="hidden sm:block fixed bottom-1/4 right-1/4 w-96 h-96 bg-zinc-500/10 rounded-full blur-[120px] pointer-events-none transition-transform duration-1000 ease-out"
         style={{ transform: `translate(${bgOffset.x * 1.5}px, ${bgOffset.y * 1.5}px)` }}
       ></div>
 
       {/* ОСНОВНОЙ КОНТЕЙНЕР */}
-      <div className="w-full flex flex-col items-center relative z-40">
+      <div className="flex-1 w-full flex items-center justify-center min-h-0 relative z-40">
         
         {/* Карточка */}
         <div 
           ref={cardRef}
-          className="relative z-10 w-full aspect-[1/1.6] sm:aspect-[1/1.5] cursor-pointer group animate-float touch-none"
-          style={{ perspective: '1500px', maxWidth: 'min(22rem, 85vw, 55vh)' }}
+          className="@container relative z-10 w-full aspect-[1/1.6] sm:aspect-[1/1.5] cursor-pointer group animate-float touch-none"
+          style={{ perspective: '1500px', maxWidth: 'min(26rem, 94vw, 52dvh)' }}
           onClick={handleFlip}
           onMouseMove={handlePointerMove}
           onMouseLeave={handlePointerLeave}
@@ -573,24 +645,22 @@ const App = () => {
               />
 
               {/* Компонент Визитки */}
-              <RealtorCard />
+              <RealtorCard t={t} />
 
               <div 
-                className="absolute inset-0 w-full h-full rounded-[2.5rem] pointer-events-none transition-opacity duration-300 card-backface-hidden"
+                className="absolute inset-0 w-full h-full rounded-[2.5rem] pointer-events-none transition-opacity duration-300 card-backface-hidden mix-blend-normal sm:mix-blend-overlay"
                 style={{
                   background: `radial-gradient(farthest-corner circle at ${glare.x}% ${glare.y}%, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 80%)`,
                   opacity: glare.opacity,
-                  mixBlendMode: 'overlay',
                   zIndex: 50,
                 }}
               />
               <div 
-                className="absolute inset-0 w-full h-full rounded-[2.5rem] pointer-events-none transition-opacity duration-300 card-backface-hidden"
+                className="absolute inset-0 w-full h-full rounded-[2.5rem] pointer-events-none transition-opacity duration-300 card-backface-hidden mix-blend-normal sm:mix-blend-overlay"
                 style={{
                   transform: 'rotateY(180deg) translateZ(0)',
                   background: `radial-gradient(farthest-corner circle at ${100 - glare.x}% ${glare.y}%, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 80%)`,
                   opacity: glare.opacity,
-                  mixBlendMode: 'overlay',
                   zIndex: 50,
                 }}
               />
@@ -599,13 +669,13 @@ const App = () => {
         </div>
 
         {/* ПАНЕЛЬ КНОПОК ПОД ВИЗИТКОЙ */}
-        <div className="mt-8 sm:mt-10 flex items-center gap-3 sm:gap-4 bg-white/5 backdrop-blur-xl border border-white/10 p-2 rounded-full shadow-[0_10px_40px_rgba(0,0,0,0.5)] z-50 relative">
+        <div className="fixed bottom-4 sm:bottom-5 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 sm:gap-3 bg-[#181818]/95 sm:bg-white/5 sm:backdrop-blur-xl border border-white/10 p-1.5 sm:p-2 rounded-full shadow-[0_10px_40px_rgba(0,0,0,0.5)]">
           <div className="flex items-center gap-0.5 px-1">
             {['RU', 'AM', 'EN'].map((l) => (
               <button
                 key={l}
                 onClick={() => setLang(l)}
-                className={`relative px-3 py-1.5 rounded-full text-[10px] font-bold tracking-widest transition-all duration-500 ${lang === l ? 'text-white' : 'text-white/40 hover:text-white/80'}`}
+                className={`relative px-2 py-1 rounded-full text-[10px] font-bold tracking-widest transition-all duration-500 ${lang === l ? 'text-white' : 'text-white/40 hover:text-white/80'}`}
               >
                 {lang === l && (
                   <span className="absolute inset-0 bg-white/10 border border-white/20 rounded-full shadow-[inset_0_0_8px_rgba(255,255,255,0.1)] pointer-events-none"></span>
@@ -615,16 +685,16 @@ const App = () => {
             ))}
           </div>
 
-          <div className="w-px h-6 bg-white/20 mx-1"></div>
+          <div className="w-px h-5 bg-white/20 mx-1"></div>
 
           <button
             onClick={() => {
               if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(15);
               setShowShare(true);
             }}
-            className="p-2.5 rounded-full text-white/60 hover:text-white hover:bg-white/10 transition-all duration-300"
+            className="p-2 rounded-full text-white/60 hover:text-white hover:bg-white/10 transition-all duration-300"
           >
-            <QrCode className="w-5 h-5" />
+            <QrCode className="w-4 h-4" />
           </button>
 
           <button
@@ -632,9 +702,9 @@ const App = () => {
               if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(15);
               downloadVCard();
             }}
-            className="p-2.5 rounded-full text-white/60 hover:text-white hover:bg-white/10 transition-all duration-300"
+            className="p-2 rounded-full text-white/60 hover:text-white hover:bg-white/10 transition-all duration-300"
           >
-            <UserPlus className="w-5 h-5" />
+            <UserPlus className="w-4 h-4" />
           </button>
         </div>
 
@@ -643,12 +713,12 @@ const App = () => {
       {/* МОДАЛЬНОЕ ОКНО ПОДЕЛИТЬСЯ */}
       {showShare && (
         <div 
-          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm transition-opacity animate-in fade-in duration-200" 
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-[#151515]/95 sm:bg-black/40 sm:backdrop-blur-sm transition-opacity animate-in fade-in duration-200" 
           onClick={() => setShowShare(false)}
         >
           <div 
-            className="backdrop-blur-3xl rounded-[2.5rem] p-6 sm:p-8 w-full max-w-sm flex flex-col items-center relative shadow-2xl animate-in zoom-in-95 duration-200 border" 
-            style={{ backgroundColor: modalTheme.bg, borderColor: modalTheme.border }}
+            className="bg-[#151515]/95 sm:bg-[rgba(148,163,184,0.15)] sm:backdrop-blur-3xl rounded-[2.5rem] p-6 sm:p-8 w-full max-w-sm flex flex-col items-center relative shadow-2xl animate-in zoom-in-95 duration-200 border" 
+            style={{ borderColor: modalTheme.border }}
             onClick={e => e.stopPropagation()}
           >
             <button 
@@ -662,8 +732,8 @@ const App = () => {
               <QrCode className={`w-6 h-6 ${modalTheme.icon}`} />
             </div>
             
-            <h3 className="text-xl font-bold text-white mb-2 tracking-wide">Поделиться визиткой</h3>
-            <p className="text-sm text-white/60 text-center mb-6 leading-relaxed">Дайте отсканировать QR-код или отправьте ссылку напрямую.</p>
+            <h3 className="text-xl font-bold text-white mb-2 tracking-wide">{t.modalTitle}</h3>
+            <p className="text-sm text-white/60 text-center mb-6 leading-relaxed">{t.modalDesc}</p>
             
             <div className="bg-white p-4 rounded-3xl mb-6 shadow-[0_0_40px_rgba(255,255,255,0.15)] flex items-center justify-center">
               <img 
@@ -679,14 +749,14 @@ const App = () => {
                 className="flex-1 bg-black/20 hover:bg-black/40 border border-white/10 text-white font-medium py-3.5 px-4 rounded-2xl flex items-center justify-center gap-2 transition-colors text-sm"
               >
                 {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
-                {copied ? 'Скопировано!' : 'Копировать'}
+                {copied ? t.copied : t.copy}
               </button>
               <button 
                 onClick={handleShare}
                 className="flex-1 bg-white/10 hover:bg-white/20 border border-white/10 text-white font-bold py-3.5 px-4 rounded-2xl flex items-center justify-center gap-2 transition-colors text-sm"
               >
                 <Share2 className="w-4 h-4" />
-                Отправить
+                {t.shareBtn}
               </button>
             </div>
           </div>
